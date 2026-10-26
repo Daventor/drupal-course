@@ -6,13 +6,14 @@ developer_directory.list:
   requirements:
     _permission: 'access content'
 
-developer_directory.view:
-  path: '/developers/{name}'
-  defaults:
-    _title: 'Detalle'
-    _controller: '\Drupal\developer_directory\Controller\DeveloperDirectoryController::view'
-  requirements:
-    _permission: 'access content'
+# developer_directory.view:
+#   path: '/developers/{name}'
+#   defaults:
+#     _title: 'Detalle'
+#     _controller: '\Drupal\developer_directory\Controller\DeveloperDirectoryController::view'
+#   requirements:
+#     _permission: 'access content'
+#     name: 'David|Rubén|Airam|Antonio|Elí|Yesica|Cristian'
 
 developer_directory.admin:
   path: '/admin/config/developer-directory'
