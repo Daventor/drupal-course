@@ -36,7 +36,7 @@ class DeveloperRegistrationForm extends FormBase{
             '#title' => $this->t('Datos personales'),
         ];
 
-        $form['identity']['nane'] = [
+        $form['identity']['name'] = [
             '#type' => 'textfield',
             '#title' => $this->t('Nombre'),
             '#required' => true,
@@ -73,7 +73,7 @@ class DeveloperRegistrationForm extends FormBase{
 
         $form['technologies'] = [
             '#type' => 'checkboxes',
-            '#title' => $this->t('Tencologías'),
+            '#title' => $this->t('Tecnologías'),
             '#options' => [
                 'php' => 'PHP',
                 'drupal' => 'Drupal',
@@ -109,6 +109,14 @@ class DeveloperRegistrationForm extends FormBase{
         ];
 
         $result = $form_state->get('registration_result');
+
+        // Contenedor en el que mostraremos el resultado.
+        $form['result'] = [
+            '#type' => 'container',
+            '#attributes' => [
+                'id' => 'developer-registration-result',
+            ],
+        ];
 
         if($result !== null){
             $form['result']['summary'] = [
