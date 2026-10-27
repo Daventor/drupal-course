@@ -1,0 +1,3 @@
+services:
+  developer_directory.manager:
+    class: Drupal\developer_directory\Service\DeveloperDirectoryManager

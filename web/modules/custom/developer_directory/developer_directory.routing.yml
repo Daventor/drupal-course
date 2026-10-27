@@ -15,6 +15,22 @@ developer_directory.list:
 #     _permission: 'access content'
 #     name: 'David|Rubén|Airam|Antonio|Elí|Yesica|Cristian'
 
+developer_directory.search:
+  path: '/developers/search'
+  defaults:
+    _form: '\Drupal\developer_directory\Form\DeveloperSearchForm'
+    _title: 'Buscar desarrolladores'
+  requirements:
+    _permission: 'access content'
+
+developer_directory.registration:
+  path: '/developers/register'
+  defaults:
+    _form: '\Drupal\developer_directory\Form\DeveloperRegistrationForm'
+    _title: 'Registro de desarrolladores'
+  requirements:
+    _permission: 'access content'
+
 developer_directory.admin:
   path: '/admin/config/developer-directory'
   defaults:

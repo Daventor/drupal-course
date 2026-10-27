@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\developer_directory\Controller;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\developer_directory\Service\DeveloperDirectoryManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,22 +15,39 @@ use Symfony\Component\Routing\Attribute\Route;
  * Returns responses for Developer Directory routes.
  */
 final class DeveloperDirectoryController extends ControllerBase {
+  
+  /**
+   * Servicio que gestiona el directorio.
+   *
+   * @var \Drupal\developer_directory\Service\DeveloperDirectoryManager
+   */
+  protected DeveloperDirectoryManager $directoryManager;
+
+  /**
+   * Constructor.
+   */
+  public function __construct(DeveloperDirectoryManager $directory_manager) {
+    $this->directoryManager = $directory_manager;
+  }
+
+  /**
+   * Crea el controlador utilizando el contenedor de Drupal.
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static($container->get('developer_directory.manager'));
+  }
 
   public function list(): array {
-    $developers = ['David', 'Rubén', 'Airam', 'Antonio', 'Elí', 'Yesica', 'Cristian'];
+    $developers = $this->directoryManager->getDevelopers();
 
     $items = [];
-    foreach($developers as $name){
-      $items[] = [
-        '#type' => 'link',
-        '#title' => $name,
-        '#url' => \Drupal\Core\Url::fromRoute('developer_directory.view', ['name' => $name])
-      ];
+    foreach($developers as $developer){
+      $items[] = $developer['name'] . " - " . $developer['email'];
     }
 
     $build['content'] = [
       '#theme' => 'item_list',
-      '#title' => $this->t('Desarrolladores'),
+      '#title' => $this->t('Directorio de desarrolladores'),
       '#items' => $items
     ];
 
@@ -36,7 +55,7 @@ final class DeveloperDirectoryController extends ControllerBase {
   }
 
   #[Route(
-    '/developer/{name}',
+    '/developers/{name}',
     name: 'developer_directory.view',
     requirements: [
       '_permission' => 'access content',
