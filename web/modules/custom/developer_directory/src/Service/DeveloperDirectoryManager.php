@@ -28,7 +28,7 @@ class DeveloperDirectoryManager {
         return $storage->loadMultiple($ids);
     }
 
-    public function getDeveloper(string $id): ?NodeInterface{
+    public function getDeveloper(int $id): ?NodeInterface{
         $node = $this->entityManager->getStorage('node')->load($id);
 
         if(!$node instanceof NodeInterface){
@@ -66,6 +66,39 @@ class DeveloperDirectoryManager {
             'available' => !empty($data['available']),
             'comments' => trim($data['comments'] ?? ''),            
         ];
+    }
+
+    public function createDeveloper(array $values): NodeInterface{
+        $storage = $this->entityManager->getStorage('node');
+
+        $developer = $storage->create([
+            'type' => 'developer',
+            'title' => $values['name'],
+            'field_email' => $values['email'],
+            'field_bio' => $values['bio'],
+            'field_experience' => $values['experience'],
+            'field_portfolio' => $values['portfolio'],
+            'field_available' => $values['available'],
+            'status' => 1,
+        ]);
+
+        $developer->save();
+
+        return $developer;
+    }
+
+    public function updateDeveloper(NodeInterface $developer, array $values): NodeInterface{
+
+        $developer->setTitle($values['name']);
+        $developer->set('field_email', $values['email']);
+        $developer->set('field_bio', $values['bio']);
+        $developer->set('field_experience', $values['experience']);
+        $developer->set('field_portfolio', ['uri' => $values['portfolio']]);
+        $developer->set('field_available', $values['available']);
+
+        $developer->save();
+
+        return $developer;
     }
 
 }

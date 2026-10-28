@@ -47,6 +47,12 @@ final class DeveloperDirectoryController extends ControllerBase {
         '#title' => $developer->getTitle() . " - " . $developer->get('field_email')->value,
         '#url' => \Drupal\Core\Url::fromRoute('developer_directory.view', ['id' => $developer->id()])
       ];
+
+      $items[] = [
+        '#type' => 'link',
+        '#title' => 'Editar',
+        '#url' => \Drupal\Core\Url::fromRoute('developer_directory.edit', ['developer' => $developer->id()])
+      ];
     }
 
     $build['content'] = [
@@ -66,7 +72,7 @@ final class DeveloperDirectoryController extends ControllerBase {
       'id' => '\d+',
     ]
   )]
-  public function view(string $id): array {
+  public function view(int $id): array {
     $developer = $this->directoryManager->getDeveloper($id);
 
     if(!$developer) throw new NotFoundHttpException(); 
