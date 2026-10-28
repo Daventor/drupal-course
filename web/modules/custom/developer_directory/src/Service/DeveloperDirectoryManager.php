@@ -2,6 +2,9 @@
 
 namespace Drupal\developer_directory\Service;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\node\NodeInterface;
+
 /**
  * Gestiona las operaciones del directorio de desarrolladores
  * 
@@ -9,21 +12,34 @@ namespace Drupal\developer_directory\Service;
  * El día 3 estudiaremos el almacenamiento con bbdd
  */
 class DeveloperDirectoryManager {
+    public function __construct(protected EntityTypeManagerInterface $entityManager)
+    { }
+    
     public function getDevelopers(): array {
-        return [
-            [
-                'name' => 'David',
-                'email' => 'davelop@gmail.com'
-            ],
-            [
-                'name' => 'Carlos',
-                'email' => 'carlos@gmail.com'
-            ],
-            [
-                'name' => 'Berto',
-                'email' => 'berto@gmail.com'
-            ],
-        ];
+        $storage = $this->entityManager->getStorage('node');
+
+        $ids = $storage->getQuery()
+            ->accessCheck(true)
+            ->condition('type', 'developer')
+            ->condition('status', 1)
+            ->sort('title', 'ASC')
+            ->execute();
+        
+        return $storage->loadMultiple($ids);
+    }
+
+    public function getDeveloper(string $id): ?NodeInterface{
+        $node = $this->entityManager->getStorage('node')->load($id);
+
+        if(!$node instanceof NodeInterface){
+            return null;
+        }
+
+        if($node->bundle() !== 'developer' || !$node->access('view')){
+            return null;
+        }
+
+        return $node;
     }
 
     

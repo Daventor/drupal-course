@@ -1,19 +1,26 @@
 <article class="developer-profile"> 
-    <h2>{{ name|upper }}</h2>
+    <h2>{{ 'Desarrollador: @name'|t({'@name': name}) }}</h2>
 
+    <p> <strong>{% trans %}Bienvenido al directorio de desarrolladores !!{% endtrans %}</strong></p>
     <p>
-        <strong>Role: </strong> {{ role|default('Sin Rol') }}
+        <strong>{{ 'Bio'|t }}: </strong> {{ bio }}
     </p>
 
-    <p>
-        <strong>Experience: </strong> {{ experience }} years                    
-    </p>
-
-    {% if experience >= 10 %}
-        <p>Desarrollador experimentado</p>
-    {% else %}
-        <p>Junior o Intermedio</p>
+    {% if portfolio_uri  %}
+        <p>
+            <strong>Portfolio: </strong> <a href="{{ portfolio_uri}}">{{ portfolio_title|default('Ver portfolio') }}</a>
+        </p>
     {% endif %}
 
+    <p>
+        <strong>Experience: </strong> {{ experience }}
+    </p>    
+
     {% include '@developer_directory/developer-skills.html.twig' with { technologies: skills } %}
+
+    <p><strong>Disponible: </strong> {{ (available|default(null))?"Sí":"No" }}</p>
+
+    {% if available %}
+        <p><strong>Contacto: </strong> <a href="mailto:{{ email }}">{{ email }}</a></p>
+    {% endif %}
 </article>

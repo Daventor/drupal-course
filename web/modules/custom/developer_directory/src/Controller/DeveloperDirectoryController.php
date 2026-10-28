@@ -42,7 +42,11 @@ final class DeveloperDirectoryController extends ControllerBase {
 
     $items = [];
     foreach($developers as $developer){
-      $items[] = $developer['name'] . " - " . $developer['email'];
+      $items[] = [
+        '#type' => 'link',
+        '#title' => $developer->getTitle() . " - " . $developer->get('field_email')->value,
+        '#url' => \Drupal\Core\Url::fromRoute('developer_directory.view', ['id' => $developer->id()])
+      ];
     }
 
     $build['content'] = [
@@ -55,61 +59,33 @@ final class DeveloperDirectoryController extends ControllerBase {
   }
 
   #[Route(
-    '/developers/{name}',
+    '/developers/{id}',
     name: 'developer_directory.view',
     requirements: [
       '_permission' => 'access content',
-      'name' => 'David|Rubén|Airam|Antonio|Elí|Yesica|Cristian'
+      'id' => '\d+',
     ]
   )]
-  public function view(string $name): array {
-    $developers = [
-      'David' => [
-        'role' => "Fullstack developer",
-        'experience' => '20 years',
-        'skills' => ['HTML', 'CSS', 'JavaScript'],
-      ],
-      'Rubén' => [
-        'role' => "Frontend developer",
-        'experience' => 15,
-        'skills' => ['HTML', 'CSS', 'JavaScript'],
-      ],
-      'Airam' => [
-        'role' => "DevOps",
-        'experience' => 5,
-        'skills' => ['HTML', 'CSS', 'JavaScript'],
-      ],
-      'Antonio' => [
-        'role' => "Frontend developer",
-        'experience' => 15,
-        'skills' => ['HTML', 'CSS', 'JavaScript'],
-      ],
-      'Elí' => [
-        'role' => "DevOps",
-        'experience' => 5,
-        'skills' => ['HTML', 'CSS', 'JavaScript'],
-      ],
-      'Yesica' => [
-        'role' => "Frontend developer",
-        'experience' => 15,
-        'skills' => [],
-      ],
-      'Cristian' => [
-        'role' => "DevOps",
-        'experience' => 5,
-        'skills' => ['HTML', 'CSS', 'JavaScript'],
-      ],
-    ];
+  public function view(string $id): array {
+    $developer = $this->directoryManager->getDeveloper($id);
 
-    if(!isset($developers[$name])) throw new NotFoundHttpException();
-    $developer = $developers[$name];
+    if(!$developer) throw new NotFoundHttpException(); 
+
+    $experienceField = $developer->get('field_experience');
+    $experienceOptions = $experienceField->getFieldDefinition()->getSetting('allowed_values');
+    $experienceLabel = $experienceOptions[$experienceField->value] ?? $experienceField->value;    
 
     return [
       '#theme' => 'developer_profile',
-      '#name' => $name,      
-      '#role' => $developer['role'],
-      '#experience' => $developer['experience'],
-      '#skills' => $developer['skills']
+      '#name' => $developer->getTitle(),      
+      '#email' => $developer->get('field_email')->value,
+      '#bio' => $developer->get('field_bio')->value,
+      '#experience' => $experienceLabel,
+      '#portfolio_title' => $developer->get('field_portfolio')->title,      
+      '#portfolio_uri' => $developer->get('field_portfolio')->uri,
+      '#available' => (bool) $developer->get('field_available')->value,
+      '#skills' => $developer->get('field_technologies')->getValue()
+      //'#skills' => array_column($developer->get('field_technologies')->getValue(), 'value')
     ];
   }
 

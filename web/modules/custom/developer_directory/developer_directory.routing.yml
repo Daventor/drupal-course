@@ -23,6 +23,14 @@ developer_directory.search:
   requirements:
     _permission: 'access content'
 
+developer_directory.search2:
+  path: '/developers/search2'
+  defaults:
+    _form: '\Drupal\developer_directory\Form\DeveloperSearchForm'
+    _title: 'Buscar desarrolladores 2'
+  requirements:
+    _permission: 'access content'
+
 developer_directory.registration:
   path: '/developers/register'
   defaults:
