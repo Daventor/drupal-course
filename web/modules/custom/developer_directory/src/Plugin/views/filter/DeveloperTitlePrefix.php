@@ -31,7 +31,7 @@ final class DeveloperTitlePrefix extends FilterPluginBase {
         ];
 
         foreach (range('A', 'Z') as $letter) {
-        $letters[$letter] = $letter;
+            $letters[$letter] = $letter;
         }
 
         $form['value'] = [
