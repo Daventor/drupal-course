@@ -15,7 +15,7 @@ class DeveloperDirectoryManager {
     public function __construct(protected EntityTypeManagerInterface $entityManager)
     { }
     
-    public function getDevelopers(): array {
+    public function getDevelopers(int $limit = 10): array {
         $storage = $this->entityManager->getStorage('node');
 
         $ids = $storage->getQuery()
@@ -23,6 +23,7 @@ class DeveloperDirectoryManager {
             ->condition('type', 'developer')
             ->condition('status', 1)
             ->sort('title', 'ASC')
+            ->range(0, max(1, $limit))
             ->execute();
         
         return $storage->loadMultiple($ids);
