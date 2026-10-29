@@ -1,0 +1,5 @@
+name: 'Developer Directory - Database API Demo'
+type: module
+description: 'Demonstrates Drupal Database API with a custom table.'
+package: 'Custom'
+core_version_requirement: ^11

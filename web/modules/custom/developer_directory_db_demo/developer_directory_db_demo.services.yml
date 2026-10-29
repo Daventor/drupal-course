@@ -1,0 +1,6 @@
+services:
+  developer_directory_db_demo.manager:
+    class: Drupal\developer_directory_db_demo\Service\DeveloperRecordManager
+    arguments:
+      - '@database'
+      - '@datetime.time'

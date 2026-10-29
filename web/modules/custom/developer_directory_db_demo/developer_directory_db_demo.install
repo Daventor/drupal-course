@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function developer_directory_db_demo_schema(): array {
+  $schema = [];
+
+  // Tabla principal: un registro por developer.
+  $schema['developer_directory_db_demo_developer'] = [
+    'description' => 'Stores developer records for the Database API demo.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary identifier.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 120,
+        'not null' => TRUE,
+        'description' => 'Developer name.',
+      ],
+      'email' => [
+        'type' => 'varchar',
+        'length' => 254,
+        'not null' => TRUE,
+        'description' => 'Developer email.',
+      ],
+      'experience' => [
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+        'description' => 'Experience level: junior, mid or senior.',
+      ],
+      'available' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the developer is available.',
+      ],
+      'portfolio_uri' => [
+        'type' => 'varchar',
+        'length' => 2048,
+        'not null' => FALSE,
+        'description' => 'Portfolio URL.',
+      ],
+      'portfolio_title' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Portfolio link title.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Creation timestamp.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'email' => ['email'],
+    ],
+    'indexes' => [
+      'experience' => ['experience'],
+      'available' => ['available'],
+    ],
+  ];
+
+  // Tabla secundaria: una fila por tecnología de cada developer.
+  $schema['developer_directory_db_demo_technology'] = [
+    'description' => 'Technologies associated with each developer.',
+    'fields' => [
+      'developer_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Identifier of the developer.',
+      ],
+      'technology' => [
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'Technology machine name.',
+      ],
+    ],
+    'primary key' => ['developer_id', 'technology'],
+    'indexes' => [
+      'technology' => ['technology'],
+    ],
+  ];
+
+  return $schema;
+}
