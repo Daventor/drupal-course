@@ -1,0 +1,17 @@
+<div class="developer-directory-featured">
+  <h2>{{ title }}</h2>
+
+  {% if developers %}
+    <ul>
+      {% for developer in developers %}
+        <li>
+          <a href="{{ developer.url }}">
+            {{ developer.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{{ 'No hay developers disponibles.'|t }}</p>
+  {% endif %}
+</div>

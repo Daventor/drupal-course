@@ -19,7 +19,14 @@ function developer_directory_theme($existing, $type, $theme, $path): array {
                 'portfolio_uri' => null
             ],
             'template' => 'developer-profile'
-        ]
+        ],
+        'developer_directory_featured' => [
+      'variables' => [
+            'developers' => [],
+            'title' => NULL,
+        ],
+            'template' => 'developer-directory-featured',
+        ],
     ];
 }
 
@@ -84,4 +91,20 @@ function developer_directory_extra_validate(array &$form, FormStateInterface $fo
 
 function developer_directory_extra_submit(array &$form, FormStateInterface $form_state){
     \Drupal::logger('developer_directory')->notice('Se ha realizado una búsqueda de desarrolladores');
+}
+
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function developer_directory_views_data_alter(array &$data): void {
+  // Añadimos una nueva opción de filtro a la tabla de títulos de nodos.
+  $data['node_field_data']['developer_title_prefix'] = [
+    'title' => t('Developer: título comienza por una letra'),
+    'help' => t('Filtra los títulos según su letra inicial.'),
+    // Utiliza nuestro plugin personalizado como filtro.
+    'filter' => [
+      'id' => 'developer_title_prefix',
+    ],
+  ];
 }

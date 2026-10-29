@@ -60,26 +60,27 @@ class FeaturedDevelopersBlock extends BlockBase implements ContainerFactoryPlugi
   }
 
   public function build(): array {
-    $developers = $this->directoryManager->getDevelopers($this->configuration['number_of_developers']);
+    $developers = $this->directoryManager->getDevelopers(
+        $this->configuration['number_of_developers']
+    );
 
     $items = [];
 
     foreach ($developers as $developer) {
-      $items[] = [
-        '#type' => 'link',
-        '#title' => $developer->getTitle(),
-        '#url' => $developer->toUrl(),
-      ];
+        $items[] = [
+        'name' => $developer->getTitle(),
+        'url' => $developer->toUrl()->toString(),
+        ];
     }
 
     return [
-      '#theme' => 'item_list',
-      '#title' => $this->t('Developers destacados'),
-      '#items' => $items,
-      '#cache' => [
-        'tags' => ['node_list'],
-        'contexts' => ['user.permissions'],
-      ],
+        '#theme' => 'developer_directory_featured',
+        '#title' => $this->t('Developers destacados'),
+        '#developers' => $items,
+        '#cache' => [
+            'tags' => ['node_list'],
+            'contexts' => ['user.permissions'],
+        ],
     ];
-  }
+    }
 }
