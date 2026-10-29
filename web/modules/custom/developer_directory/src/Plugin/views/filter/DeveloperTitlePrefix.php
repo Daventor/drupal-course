@@ -62,6 +62,7 @@ final class DeveloperTitlePrefix extends FilterPluginBase {
     // Añade una condición SQL parametrizada sobre el título del nodo.
     $this->query->addWhereExpression(
       $this->options['group'],
+#      $this->tableAlias . '.type = :developer_bundle', [':developer_bundle' => 'developer'] // Filtrado sólo para que aplique a developers
       'UPPER(' . $this->tableAlias . '.title) LIKE :developer_title_prefix',
       [
         ':developer_title_prefix' => strtoupper($value) . '%',
