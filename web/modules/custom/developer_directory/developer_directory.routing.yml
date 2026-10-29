@@ -59,10 +59,23 @@ developer_directory.edit:
       developer:
         type: entity:node
 
+# developer_directory.delete:
+#   path: '/developers/{node}/delete'
+#   defaults:
+#     _entity_form: 'node.delete'
+#     _title: 'Eliminar desarrollador'
+#   requirements:
+#     _entity_access: 'node.delete'
+#     node: '\d+'
+#   options:
+#     parameters:
+#       node:
+#         type: entity:node
+
 developer_directory.delete:
   path: '/developers/{node}/delete'
   defaults:
-    _entity_form: 'node.delete'
+    _form: '\Drupal\developer_directory\Form\DeveloperDeleteForm'
     _title: 'Eliminar desarrollador'
   requirements:
     _entity_access: 'node.delete'
