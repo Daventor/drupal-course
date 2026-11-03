@@ -40,6 +40,20 @@ final class DeveloperDirectoryController extends ControllerBase {
   public function list(): array {
     $developers = $this->directoryManager->getDevelopers();
 
+    // Config solo lectura (la que usaremos normalmente)
+    //$config = $this->config('developer_directory.settings');
+
+    // Config modo lectura/escritura (la usaremos pocas veces)
+    // $config = $this->configFactory()->getEditable('developer_directory.settings');
+
+    // $config->set('developers_per_page', 20);
+    // $config->save();
+
+    // $limit = $config->get('developers_per_page');
+    // $showEmail = $config->get('show_email');
+
+    
+
     $items = [];
     foreach($developers as $developer){
       $items[] = [

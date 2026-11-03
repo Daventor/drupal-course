@@ -6,16 +6,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\developer_directory\Service\DeveloperDirectoryManager;
+use Drupal\developer_directory\Service\DeveloperNotificationQueue;
 use Drupal\node\NodeInterface;
 use Override;
 
 class DeveloperForm extends FormBase {
 
-    public function __construct(protected DeveloperDirectoryManager $directoryManager)
+    public function __construct(protected DeveloperDirectoryManager $directoryManager, protected DeveloperNotificationQueue $notificationQueue)
     {}
 
     public static function create(ContainerInterface $container): static{
-        return new static($container->get('developer_directory.manager'));
+        return new static(
+            $container->get('developer_directory.manager'), 
+            $container->get('developer_directory.notification_queue')
+        );
     }
 
     public function getFormId(): string
@@ -125,11 +129,22 @@ class DeveloperForm extends FormBase {
 
             $developer = $this->directoryManager->updateDeveloper($developer, $values);
 
+            $this->notificationQueue->enqueue(
+                (int) $developer->id(),
+                'updated'
+            );
+
             $this->messenger()->addStatus($this->t('Se ha actualizado el desarrollador @name.', ['@name' => $developer->getTitle()]));
 
         }else{
             // Inserción
             $developer = $this->directoryManager->createDeveloper($values);
+
+            $this->notificationQueue->enqueue(
+                (int) $developer->id(),
+                'created'
+            );
+
             $this->messenger()->addStatus($this->t('Se ha creado el desarrollador @name.', ['@name' => $developer->getTitle()]));
         }                
 

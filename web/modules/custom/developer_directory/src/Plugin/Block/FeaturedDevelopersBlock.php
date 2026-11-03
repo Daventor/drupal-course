@@ -4,6 +4,7 @@ namespace Drupal\developer_directory\Plugin\Block;
 
 use Drupal\Core\Block\Attribute\Block;
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -64,6 +65,24 @@ class FeaturedDevelopersBlock extends BlockBase implements ContainerFactoryPlugi
         $this->configuration['number_of_developers']
     );
 
+    // Control fino de la caché
+    // $build = [
+    //   '#theme' => 'developer_directory_featured',
+    //   '#title' => $this->t('Developers destacados'),
+    //   '#developers' => $developers,
+    // ];
+
+    // $cache = CacheableMetadata::createFromRenderArray($build);
+
+    // foreach ($developers as $developer) {
+    //     $cache->addCacheableDependency($developer);
+    // }
+
+    // $cache->addCacheTags(['node_list']);
+    // $cache->applyTo($build);
+
+    // return $build;
+
     $items = [];
 
     foreach ($developers as $developer) {
@@ -79,7 +98,8 @@ class FeaturedDevelopersBlock extends BlockBase implements ContainerFactoryPlugi
         '#developers' => $items,
         '#cache' => [
             'tags' => ['node_list'],
-            'contexts' => ['user.permissions'],
+            'contexts' => ['user.permissions', 'languages:language_interface'],
+            'max-age' => 3600
         ],
     ];
     }
