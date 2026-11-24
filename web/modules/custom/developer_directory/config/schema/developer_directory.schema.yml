@@ -1,0 +1,20 @@
+developer_directory.settings:
+  type: config_object
+  label: 'Developer directory settings'
+  mapping:
+    directory_enabled:
+      type: boolean
+      label: 'Public directory enabled'
+    page_title:
+      type: label
+      label: 'Directory page title'
+    items_per_page:
+      type: integer
+      label: 'Developers per page'
+      constraints:
+        Range:
+          min: 1
+          max: 50
+    notification_email:
+      type: email
+      label: 'Notification email'

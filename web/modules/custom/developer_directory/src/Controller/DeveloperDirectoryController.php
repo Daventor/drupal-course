@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Drupal\developer_directory\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Http\Exception\CacheableNotFoundHttpException;
 use Drupal\developer_directory\Service\DeveloperDirectoryManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -38,21 +40,15 @@ final class DeveloperDirectoryController extends ControllerBase {
   }
 
   public function list(): array {
-    $developers = $this->directoryManager->getDevelopers();
-
     // Config solo lectura (la que usaremos normalmente)
-    //$config = $this->config('developer_directory.settings');
+    $config = $this->config('developer_directory.settings');
 
-    // Config modo lectura/escritura (la usaremos pocas veces)
-    // $config = $this->configFactory()->getEditable('developer_directory.settings');
+    if(!$config->get('directory_enabled')){
+      // 404 que también se invalida cuando cambie la configuración.
+      throw new CacheableNotFoundHttpException($config);
+    }
 
-    // $config->set('developers_per_page', 20);
-    // $config->save();
-
-    // $limit = $config->get('developers_per_page');
-    // $showEmail = $config->get('show_email');
-
-    
+    $developers = $this->directoryManager->getDevelopers();
 
     $items = [];
     foreach($developers as $developer){
@@ -69,11 +65,18 @@ final class DeveloperDirectoryController extends ControllerBase {
       ];
     }
 
-    $build['content'] = [
-      '#theme' => 'item_list',
-      '#title' => $this->t('Directorio de desarrolladores'),
-      '#items' => $items
+    $build = [
+      '#title' => $config->get('page_title'),
+      'content' => [
+        '#theme' => 'item_list',
+        '#title' => $this->t('Directorio de desarrolladores'),
+        '#items' => $items
+      ],
     ];
+
+    CacheableMetadata::createFromRenderArray($build)
+      ->addCacheableDependency($config)
+      ->applyTo($build);
 
     return $build;
   }
@@ -106,12 +109,6 @@ final class DeveloperDirectoryController extends ControllerBase {
       '#available' => (bool) $developer->get('field_available')->value,
       '#skills' => $developer->get('field_technologies')->getValue()
       //'#skills' => array_column($developer->get('field_technologies')->getValue(), 'value')
-    ];
-  }
-
-  public function admin(): array{
-    return [
-      '#markup' => $this->t('Página de administración del directorio de desarrolladores')
     ];
   }
 }

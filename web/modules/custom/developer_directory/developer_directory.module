@@ -2,33 +2,10 @@
 
 use Drupal\Core\Form\FormStateInterface;
 
-/** 
- * Implements hook_theme()
- */
-function developer_directory_theme($existing, $type, $theme, $path): array {
-    return [
-        'developer_profile' => [
-            'variables' => [
-                'name' => null,
-                'bio' => null,
-                'experience' => null,
-                'skills' => null,
-                'email' => null,
-                'available' => false,
-                'portfolio_title' => null,
-                'portfolio_uri' => null
-            ],
-            'template' => 'developer-profile'
-        ],
-        'developer_directory_featured' => [
-      'variables' => [
-            'developers' => [],
-            'title' => NULL,
-        ],
-            'template' => 'developer-directory-featured',
-        ],
-    ];
-}
+/**
+* No se pueden extraer
+* hook_schema(), hook_install, hook_update, hook_post_update
+*/
 
 /**
  * Implements hook_form_FORM_ID_alter().

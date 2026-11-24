@@ -8,3 +8,15 @@ services:
     class: Drupal\developer_directory\Service\DeveloperNotificationQueue
     arguments:
       - '@queue'
+
+  Drupal\developer_directory\Service\DeveloperNotificationQueue: '@developer_directory.notification_queue'
+
+  logger.channel.developer_directory:
+    parent: logger.channel_base
+    arguments: ['developer_directory']
+
+  developer_directory.settings_audit_subscriber:
+    class: Drupal\developer_directory\EventSubscriber\SettingsAuditSubscriber
+    arguments: ['@logger.channel.developer_directory', '@current_user']
+    tags:
+      - { name: event_subscriber }

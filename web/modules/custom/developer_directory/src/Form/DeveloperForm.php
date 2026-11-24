@@ -127,23 +127,15 @@ class DeveloperForm extends FormBase {
                 throw new \Symfony\Component\Httpkernel\Exception\NotFoundHttpException();
             }
 
+            // La notificación la encola el hook node_update (DeveloperEntityHooks).
             $developer = $this->directoryManager->updateDeveloper($developer, $values);
-
-            $this->notificationQueue->enqueue(
-                (int) $developer->id(),
-                'updated'
-            );
 
             $this->messenger()->addStatus($this->t('Se ha actualizado el desarrollador @name.', ['@name' => $developer->getTitle()]));
 
         }else{
             // Inserción
+            // La notificación la encola el hook node_insert (DeveloperEntityHooks).
             $developer = $this->directoryManager->createDeveloper($values);
-
-            $this->notificationQueue->enqueue(
-                (int) $developer->id(),
-                'created'
-            );
 
             $this->messenger()->addStatus($this->t('Se ha creado el desarrollador @name.', ['@name' => $developer->getTitle()]));
         }                
